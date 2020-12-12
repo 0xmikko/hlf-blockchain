@@ -42,7 +42,6 @@ func (r *receivablesRepository) Insert(item *core.Receivable) error {
 		item.Issuer,
 		item.Payer,
 		strconv.Itoa(item.Amount),
-		item.Hash,
 	)
 	return err
 }
