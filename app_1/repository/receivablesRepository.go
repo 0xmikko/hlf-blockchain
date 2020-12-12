@@ -46,6 +46,15 @@ func (r *receivablesRepository) Insert(item *core.Receivable) error {
 	return err
 }
 
+// GetById returns Receivable by ID from HLF
+func (r *receivablesRepository) GetByID(result *core.Receivable, id string) error {
+	recBytes, err := r.contract.EvaluateTransaction("GetReceivable", id)
+	if err != nil {
+		return err
+	}
+	return json.Unmarshal(recBytes, result)
+}
+
 // List All Receivables from HLF
 func (r *receivablesRepository) List(result *[]core.Receivable) error {
 
