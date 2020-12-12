@@ -31,8 +31,7 @@ func NewServer(config *config.Config) *gin.Engine {
 		//AllowAllOrigins:  true,
 		AllowOrigins: []string{
 			"http://localhost:8080",
-			"http://localhost:3000",
-			"http://localhost:3001",
+			"http://localhost:5000",
 		},
 		AllowMethods:     []string{"POST", "GET", "PUT", "PATCH", "DELETE"},
 		AllowHeaders:     []string{"Content-Type", "Content-Length", "X-CSRF-Token", "Authorization", "accept", "origin", "Cache-Control", "X-Requested-With"},

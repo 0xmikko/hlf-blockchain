@@ -14,7 +14,7 @@ import (
 )
 
 const salt = "Joiejofe"
-var network1Nodes = []string{"http://130.193.59.251:8080"}
+var network1Nodes = []string{"http://130.193.59.251:8080", "http://130.193.59.251:5000"}
 const minConsensusShare = 50
 
 // SmartContract provides functions for managing an Receivable
@@ -73,7 +73,7 @@ func (s *SmartContract) ImportReceivable(ctx contractapi.TransactionContextInter
 	for _, node := range network1Nodes {
 
 		// Making request
-		url := node + "/api/receivables/" + id
+		url := node + "/api/receivables/" + id + "/"
 		req, err := http.NewRequest("GET", url, nil)
 		if err != nil {
 			return err
@@ -86,6 +86,10 @@ func (s *SmartContract) ImportReceivable(ctx contractapi.TransactionContextInter
 
 		body, err := ioutil.ReadAll(resp.Body)
 		resp.Body.Close()
+		if err != nil {
+			errorsQty++
+			continue
+		}
 
 		// Parsing result
 		var rec Receivable
