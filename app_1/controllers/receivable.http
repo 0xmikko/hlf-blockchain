@@ -1,0 +1,13 @@
+###
+POST http://130.193.59.251:8080/api/receivables/
+Content-Type: application/json
+
+{
+  "issuer": "Gazprom Test",
+  "payer": "Naon",
+  "amount": 1300
+}
+
+###
+GET http://130.193.59.251:8080/api/receivables/
+Accept: application/json
