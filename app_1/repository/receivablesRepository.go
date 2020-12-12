@@ -47,7 +47,7 @@ func (r *receivablesRepository) Insert(item *core.Receivable) error {
 }
 
 // GetById returns Receivable by ID from HLF
-func (r *receivablesRepository) GetByID(result *core.Receivable, id string) error {
+func (r *receivablesRepository) FindOneByID(result *core.Receivable, id string) error {
 	recBytes, err := r.contract.EvaluateTransaction("GetReceivable", id)
 	if err != nil {
 		return err
@@ -66,5 +66,10 @@ func (r *receivablesRepository) List(result *[]core.Receivable) error {
 		return err
 	}
 	return nil
+}
 
+// Start syncing process with Network #1
+func (r *receivablesRepository) GetFromAnotherChain(id string) error {
+	_, err := r.contract.SubmitTransaction("ImportReceivable", id)
+	return err
 }

@@ -31,10 +31,22 @@ func NewReceivablesController(config *config.Config, g *gin.Engine,
 
 	r.GET("/", controller.List)
 	r.POST("/", controller.Create)
+	r.GET("/:id/", withId(controller.Retrieve))
+	r.POST("/sync/", controller.Sync)
 }
 
-// GET: /api/ERC20s/
-// Returns array of active ERC20s
+// GET: /api/receivables/:id/
+func (bc *receivableController) Retrieve(c *gin.Context, id string) {
+	result, err := bc.service.Retrieve(id)
+	if err != nil {
+		errorhandler.ResponseWithAPIError(c, err)
+		return
+	}
+	c.JSON(http.StatusOK, result)
+}
+
+// GET: /api/receivables/
+// Returns array of receivables
 func (bc *receivableController) List(c *gin.Context) {
 
 	result, err := bc.service.List()
@@ -45,7 +57,7 @@ func (bc *receivableController) List(c *gin.Context) {
 	c.JSON(http.StatusOK, result)
 }
 
-//// POST: /api/ERC20s/
+// POST: /api/receivables/
 func (bc *receivableController) Create(c *gin.Context) {
 	var req payloads.CreateReceivableReq
 	if err := c.BindJSON(&req); err != nil {
@@ -54,6 +66,22 @@ func (bc *receivableController) Create(c *gin.Context) {
 	}
 
 	if err := bc.service.Create(&req); err != nil {
+		errorhandler.ResponseWithAPIError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{})
+}
+
+// POST: /api/receivables/sync/
+func (bc *receivableController) Sync(c *gin.Context) {
+	var req payloads.SyncReq
+	if err := c.BindJSON(&req); err != nil {
+		errorhandler.ResponseWithAPIError(c, errorhandler.HttpBadRequestError(errors.New("Incorrect request")))
+		return
+	}
+
+	if err := bc.service.Sync(req.ID); err != nil {
 		errorhandler.ResponseWithAPIError(c, err)
 		return
 	}

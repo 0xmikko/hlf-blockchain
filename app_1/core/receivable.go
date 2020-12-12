@@ -20,12 +20,16 @@ type (
 
 	ReceivableRepositoryI interface {
 		Insert(item *Receivable) error
+		FindOneByID(result *Receivable, id string) error
 		List(result *[]Receivable) error
+		GetFromAnotherChain(id string) error
 	}
 
 	ReceivableServiceI interface {
+		Retrieve(id string) (*Receivable, error)
 		List() ([]Receivable, error)
 		Create(req *payloads.CreateReceivableReq) error
+		Sync(id string) error
 	}
 )
 

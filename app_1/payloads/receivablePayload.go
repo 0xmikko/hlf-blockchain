@@ -13,4 +13,8 @@ type (
 		Payer  string `json:"payer"`
 		Amount int    `json:"amount"`
 	}
+
+	SyncReq struct {
+		ID string `json:"id"`
+	}
 )
