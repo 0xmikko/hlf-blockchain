@@ -1,13 +1,16 @@
 package main
 
 import (
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
-	"log"
-	"time"
-
+	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/hyperledger/fabric-contract-api-go/contractapi"
+	"log"
+	"strconv"
 )
+
+const salt = "Joiejofe"
 
 // SmartContract provides functions for managing an Receivable
 type SmartContract struct {
@@ -16,25 +19,23 @@ type SmartContract struct {
 
 // Receivable describes basic details of what makes up a simple asset
 type Receivable struct {
-	ID     string    `json:"id"`
-	Date   time.Time `json:"date"`
-	Issuer int       `json:"issuer"`
-	Payer  int       `json:"payer"`
-	Amount int       `json:"amount"`
+	ID     string `json:"id"`
+	Issuer string `json:"issuer"`
+	Payer  string `json:"payer"`
+	Amount int    `json:"amount"`
+	Hash   string `json:"hash"`
 }
 
 // InitLedger adds a base set of assets to the ledger
 func (s *SmartContract) InitLedger(ctx contractapi.TransactionContextInterface) error {
 	assets := []Receivable{
-		{ID: "asset1", Color: "blue", Size: 5, Owner: "Tomoko", AppraisedValue: 300},
-		{ID: "asset2", Color: "red", Size: 5, Owner: "Brad", AppraisedValue: 400},
-		{ID: "asset3", Color: "green", Size: 10, Owner: "Jin Soo", AppraisedValue: 500},
-		{ID: "asset4", Color: "yellow", Size: 10, Owner: "Max", AppraisedValue: 600},
-		{ID: "asset5", Color: "black", Size: 15, Owner: "Adriana", AppraisedValue: 700},
-		{ID: "asset6", Color: "white", Size: 15, Owner: "Michel", AppraisedValue: 800},
+		{ID: "rec1", Issuer: "GazpromNeft", Payer: "MarineLand", Amount: 300},
+		{ID: "rec2", Issuer: "GazpromNeft", Payer: "MarineLines", Amount: 200},
+		{ID: "rec3", Issuer: "GazpromNeft", Payer: "SovKomFlot", Amount: 1000},
 	}
 
 	for _, asset := range assets {
+		asset.Hash = s.getHash(asset)
 		assetJSON, err := json.Marshal(asset)
 		if err != nil {
 			return err
@@ -49,9 +50,9 @@ func (s *SmartContract) InitLedger(ctx contractapi.TransactionContextInterface) 
 	return nil
 }
 
-// CreateAsset issues a new asset to the world state with given details.
-func (s *SmartContract) CreateAsset(ctx contractapi.TransactionContextInterface, id string, color string, size int, owner string, appraisedValue int) error {
-	exists, err := s.AssetExists(ctx, id)
+// CreateReceivable issues a new asset to the world state with given details.
+func (s *SmartContract) CreateReceivable(ctx contractapi.TransactionContextInterface, id, issuer, payer string, amount int) error {
+	exists, err := s.ReceivableExists(ctx, id)
 	if err != nil {
 		return err
 	}
@@ -60,12 +61,14 @@ func (s *SmartContract) CreateAsset(ctx contractapi.TransactionContextInterface,
 	}
 
 	asset := Receivable{
-		ID:             id,
-		Color:          color,
-		Size:           size,
-		Owner:          owner,
-		AppraisedValue: appraisedValue,
+		ID:     id,
+		Issuer: issuer,
+		Payer:  payer,
+		Amount: amount,
 	}
+
+	asset.Hash = s.getHash(asset)
+
 	assetJSON, err := json.Marshal(asset)
 	if err != nil {
 		return err
@@ -75,7 +78,7 @@ func (s *SmartContract) CreateAsset(ctx contractapi.TransactionContextInterface,
 }
 
 // ReadAsset returns the asset stored in the world state with given id.
-func (s *SmartContract) ReadAsset(ctx contractapi.TransactionContextInterface, id string) (*Receivable, error) {
+func (s *SmartContract) GetReceivable(ctx contractapi.TransactionContextInterface, id string) (*Receivable, error) {
 	assetJSON, err := ctx.GetStub().GetState(id)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read from world state: %v", err)
@@ -93,47 +96,8 @@ func (s *SmartContract) ReadAsset(ctx contractapi.TransactionContextInterface, i
 	return &asset, nil
 }
 
-// UpdateAsset updates an existing asset in the world state with provided parameters.
-func (s *SmartContract) UpdateAsset(ctx contractapi.TransactionContextInterface, id string, color string, size int, owner string, appraisedValue int) error {
-	exists, err := s.AssetExists(ctx, id)
-	if err != nil {
-		return err
-	}
-	if !exists {
-		return fmt.Errorf("the asset %s does not exist", id)
-	}
-
-	// overwriting original asset with new asset
-	asset := Receivable{
-		ID:             id,
-		Color:          color,
-		Size:           size,
-		Owner:          owner,
-		AppraisedValue: appraisedValue,
-	}
-	assetJSON, err := json.Marshal(asset)
-	if err != nil {
-		return err
-	}
-
-	return ctx.GetStub().PutState(id, assetJSON)
-}
-
-// DeleteAsset deletes an given asset from the world state.
-func (s *SmartContract) DeleteAsset(ctx contractapi.TransactionContextInterface, id string) error {
-	exists, err := s.AssetExists(ctx, id)
-	if err != nil {
-		return err
-	}
-	if !exists {
-		return fmt.Errorf("the asset %s does not exist", id)
-	}
-
-	return ctx.GetStub().DelState(id)
-}
-
-// AssetExists returns true when asset with given ID exists in world state
-func (s *SmartContract) AssetExists(ctx contractapi.TransactionContextInterface, id string) (bool, error) {
+// ReceivableExists returns true when asset with given ID exists in world state
+func (s *SmartContract) ReceivableExists(ctx contractapi.TransactionContextInterface, id string) (bool, error) {
 	assetJSON, err := ctx.GetStub().GetState(id)
 	if err != nil {
 		return false, fmt.Errorf("failed to read from world state: %v", err)
@@ -142,24 +106,8 @@ func (s *SmartContract) AssetExists(ctx contractapi.TransactionContextInterface,
 	return assetJSON != nil, nil
 }
 
-// TransferAsset updates the owner field of asset with given id in world state.
-func (s *SmartContract) TransferAsset(ctx contractapi.TransactionContextInterface, id string, newOwner string) error {
-	asset, err := s.ReadAsset(ctx, id)
-	if err != nil {
-		return err
-	}
-
-	asset.Owner = newOwner
-	assetJSON, err := json.Marshal(asset)
-	if err != nil {
-		return err
-	}
-
-	return ctx.GetStub().PutState(id, assetJSON)
-}
-
 // GetAllAssets returns all assets found in world state
-func (s *SmartContract) GetAllAssets(ctx contractapi.TransactionContextInterface) ([]*Receivable, error) {
+func (s *SmartContract) GetAllReceivables(ctx contractapi.TransactionContextInterface) ([]*Receivable, error) {
 	// range query with empty string for startKey and endKey does an
 	// open-ended query of all assets in the chaincode namespace.
 	resultsIterator, err := ctx.GetStub().GetStateByRange("", "")
@@ -184,6 +132,11 @@ func (s *SmartContract) GetAllAssets(ctx contractapi.TransactionContextInterface
 	}
 
 	return assets, nil
+}
+
+func (s *SmartContract) getHash(r Receivable) string {
+	hashStr := r.ID + r.Issuer + r.Payer + strconv.Itoa(r.Amount) + salt
+	return hex.EncodeToString(crypto.Keccak256([]byte(hashStr)))
 }
 
 func main() {
