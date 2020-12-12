@@ -55,7 +55,7 @@ func NewHLFClient(config *config.Config) *gateway.Network {
 	if err != nil {
 		log.Fatalf("Failed to connect to gateway: %v", err)
 	}
-	defer gw.Close()
+	//defer gw.Close()
 
 	network, err := gw.GetNetwork("mychannel")
 	if err != nil {
