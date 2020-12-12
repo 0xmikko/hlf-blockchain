@@ -38,10 +38,10 @@ func NewReceivablesRepository(hlf *gateway.Network) core.ReceivableRepositoryI {
 func (r *receivablesRepository) Insert(item *core.Receivable) error {
 	_, err := r.contract.SubmitTransaction("CreateReceivable",
 		item.ID,
-		item.Date.String(),
-		strconv.Itoa(item.Issuer),
-		strconv.Itoa(item.Payer),
+		item.Issuer,
+		item.Payer,
 		strconv.Itoa(item.Amount),
+		item.Hash,
 	)
 	return err
 }

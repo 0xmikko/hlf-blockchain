@@ -5,17 +5,12 @@
 
 package payloads
 
-import (
-	"time"
-)
-
 type (
 
 	// Data structure with signed order from user
 	CreateReceivableReq struct {
-		Date   time.Time `json:"date"`
-		Issuer int       `json:"issuer"`
-		Payer  int       `json:"payer"`
-		Amount int       `json:"amount"`
+		Issuer string `json:"issuer"`
+		Payer  string `json:"payer"`
+		Amount int    `json:"amount"`
 	}
 )

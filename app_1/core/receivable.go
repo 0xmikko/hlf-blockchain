@@ -7,16 +7,15 @@ package core
 
 import (
 	"github.com/MikaelLazarev/hlf-blockchain/app_1/payloads"
-	"time"
 )
 
 type (
 	Receivable struct {
-		ID     string    `json:"id"`
-		Date   time.Time `json:"date"`
-		Issuer int       `json:"issuer"`
-		Payer  int       `json:"payer"`
-		Amount int       `json:"amount"`
+		ID     string `json:"id"`
+		Issuer string `json:"issuer"`
+		Payer  string `json:"payer"`
+		Amount int    `json:"amount"`
+		Hash   string `json:"hash"`
 	}
 
 	ReceivableRepositoryI interface {
@@ -32,7 +31,6 @@ type (
 
 func ReceivableFromReq(req *payloads.CreateReceivableReq) Receivable {
 	var r Receivable
-	r.Date = req.Date
 	r.Issuer = req.Issuer
 	r.Payer = req.Payer
 	r.Amount = req.Amount
