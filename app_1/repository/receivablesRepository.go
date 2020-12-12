@@ -30,7 +30,8 @@ func NewReceivablesRepository(hlf *gateway.Network) core.ReceivableRepositoryI {
 	log.Println(string(result))
 
 	return &receivablesRepository{
-		hlf: hlf,
+		hlf:      hlf,
+		contract: contract,
 	}
 }
 
