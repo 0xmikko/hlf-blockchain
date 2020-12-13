@@ -50,7 +50,7 @@ export function ReceivableListItem1({
           break;
       }
     }
-  });
+  }, [operation?.status, hash]);
 
   return (
     <tr>
