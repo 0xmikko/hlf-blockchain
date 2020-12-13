@@ -4,7 +4,6 @@
 
 import React from 'react';
 import {Container, Nav, Navbar} from 'react-bootstrap';
-import {Link} from 'react-router-dom';
 
 export function AppBar() : React.ReactElement {
 
