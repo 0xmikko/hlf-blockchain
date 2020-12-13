@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Receivable } from "../core/receivable";
 import { Button, Table } from "react-bootstrap";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import actions from "../store/actions";
+import { operationSelector } from "redux-data-connect";
 
 export interface ReceivableListItemProps {
   data: Receivable;
@@ -14,17 +15,61 @@ export function ReceivableListItem1({
   onSelect,
 }: ReceivableListItemProps): React.ReactElement {
   const dispatch = useDispatch();
-  const onSync = () =>
-    dispatch(actions.network2.importReceivable(data.id, "Sync"));
+  const [hash, setHash] = useState("0");
+  const [btnName, setBtnName] = useState("Transfer");
+
+  const onSync = () => {
+    const newHash = Date.now().toString();
+    dispatch(actions.network2.importReceivable(data.id, newHash));
+    setHash(newHash);
+  };
+
+  const operation = useSelector(operationSelector(hash));
+
+  useEffect(() => {
+    if (hash !== "0") {
+      switch (operation?.status) {
+        default:
+        case "STATUS.LOADING":
+          setBtnName("Transferring...");
+          break;
+
+        case "STATUS.FAILURE":
+          alert(
+            "Receivable transfer failed" + (operation.error || "Unknown error")
+          );
+          setBtnName("Failed");
+          setHash("0");
+          break;
+
+        case "STATUS.UPDATING":
+        case "STATUS.SUCCESS":
+          alert("Receivable transferred");
+          setBtnName("Transferred");
+          setHash("0");
+          break;
+      }
+    }
+  });
 
   return (
-      <tr onClick={() => onSelect(data.id)}>
-        <td className="text-left tx-normal" style={{height: "60px"}}>{data.issuer}</td>
-        <td className="text-left tx-normal">{data.payer}</td>
-        <td className="text-center tx-normal">{data.amount}</td>
+    <tr>
+      <td
+        className="text-left tx-normal"
+        style={{ height: "60px" }}
+        onClick={() => onSelect(data.id)}
+      >
+        {data.issuer}
+      </td>
+      <td className="text-left tx-normal" onClick={() => onSelect(data.id)}>
+        {data.payer}
+      </td>
+      <td className="text-center tx-normal" onClick={() => onSelect(data.id)}>
+        {data.amount}
+      </td>
       <td>
         <Button size={"sm"} onClick={onSync}>
-          Transfer
+          {btnName}
         </Button>
       </td>
     </tr>
@@ -37,7 +82,9 @@ export function ReceivableListItem2({
 }: ReceivableListItemProps): React.ReactElement {
   return (
     <tr onClick={() => onSelect(data.id)}>
-      <td className="text-left tx-normal" style={{height: "60px"}}>{data.issuer}</td>
+      <td className="text-left tx-normal" style={{ height: "60px" }}>
+        {data.issuer}
+      </td>
       <td className="text-left tx-normal">{data.payer}</td>
       <td className="text-center tx-normal">{data.amount}</td>
       <td></td>
@@ -58,7 +105,7 @@ export function ReceivableHeader({
         marginTop: "20px",
       }}
     >
-      <thead style={{ borderColor: "black!important"}}>
+      <thead style={{ borderColor: "black!important" }}>
         <th className="text-left tx-normal">Issuer</th>
         <th className="text-left tx-normal">Payer</th>
         <th>Amount</th>

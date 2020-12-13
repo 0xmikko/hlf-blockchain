@@ -4,8 +4,8 @@ Content-Type: application/json
 
 {
   "issuer": "Gazprom Test",
-  "payer": "Naon",
-  "amount": 1300
+  "payer": "GZPRM",
+  "amount": 100
 }
 
 ###
