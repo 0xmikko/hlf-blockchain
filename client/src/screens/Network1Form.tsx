@@ -25,37 +25,40 @@ export function Network1Form(): React.ReactElement {
     const found = data?.filter((e) => e.id === id);
     if (found.length === 0) return;
     setReceivable(found[0]);
+    setShowModal(true);
   };
 
-  const onHide = () => setShowModal(false)
+  const onHide = () => setShowModal(false);
 
   return (
-    <div
-      style={{
-        backgroundColor: "#bee8ff",
-        borderRadius: "20px",
-        padding: "20px",
-        textAlign: "center",
-        marginTop: "30px",
-      }}
-    >
+    <>
       <ReceivablesModal data={receivable} show={showModal} onHide={onHide} />
-      <h1>Network #1</h1>
-      <h3 style={{ marginBottom: 0 }}>Oil supplier network</h3>
-      <span style={{ fontSize: "14px", fontWeight: "bold" }}>
-        {BACKEND_ADDR_1}
-      </span>
+      <div
+        style={{
+          backgroundColor: "#bee8ff",
+          borderRadius: "20px",
+          padding: "20px",
+          textAlign: "center",
+          marginTop: "30px",
+        }}
+      >
+        <h1>Network #1</h1>
+        <h3 style={{ marginBottom: 0 }}>Oil supplier network</h3>
+        <span style={{ fontSize: "14px", fontWeight: "bold" }}>
+          {BACKEND_ADDR_1}
+        </span>
 
-      <div style={{ flex: 1, height: "calc(100vh - 360px)" }}>
-        <DataListView
-          getList={getList}
-          data={data}
-          renderHeader={ReceivableHeader}
-          renderItem={ReceivableListItem1}
-          onSelect={onSelect}
-        />
+        <div style={{ flex: 1, height: "calc(100vh - 360px)" }}>
+          <DataListView
+            getList={getList}
+            data={data}
+            renderHeader={ReceivableHeader}
+            renderItem={ReceivableListItem1}
+            onSelect={onSelect}
+          />
+        </div>
+        <Button onClick={() => getList("Update")}>Refresh List</Button>
       </div>
-      <Button onClick={() => getList("Update")}>Update List</Button>
-    </div>
+    </>
   );
 }

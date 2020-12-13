@@ -13,14 +13,24 @@ export function ReceivablesModal({
   show,
   onHide,
 }: ReceivablesModalProps): React.ReactElement {
-
-  if (data === null) return <div />
+  if (data === null) return <div />;
   return (
-    <Modal show={show} onHide={onHide}>
+    <Modal
+      show={show}
+      onHide={onHide}
+      size={"lg"}
+      centered
+    >
       <Modal.Header closeButton>
-        <Modal.Title>Modal heading</Modal.Title>
+        <Modal.Title>Receivable: {data.id}</Modal.Title>
       </Modal.Header>
-      <Modal.Body>Woohoo, you're reading this text in a modal!</Modal.Body>
+      <Modal.Body>
+        ID: {data.id} <br />
+        Issuer: {data.issuer} <br/>
+        Payer: {data.payer} <br/>
+        Amount: {data.amount} <br/>
+        Hash: {data.hash} <br/>
+      </Modal.Body>
     </Modal>
   );
 }

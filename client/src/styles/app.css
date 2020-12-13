@@ -665,26 +665,26 @@ label {
   }
 }
 
-.modal {
-  padding: 0 !important;
-}
-.modal .modal-dialog {
-  width: 100%;
-  max-width: none;
-  margin: 0;
-}
-.modal .modal-content {
-  height: 100%;
-  border: 0;
-  border-radius: 0;
-}
-.modal .modal-body {
-  overflow-y: auto;
-}
+/*.modal {*/
+/*  padding: 0 !important;*/
+/*}*/
+/*.modal .modal-dialog {*/
+/*  width: 100%;*/
+/*  max-width: none;*/
+/*  margin: 0;*/
+/*}*/
+/*.modal .modal-content {*/
+/*  height: 100%;*/
+/*  border: 0;*/
+/*  border-radius: 0;*/
+/*}*/
+/*.modal .modal-body {*/
+/*  overflow-y: auto;*/
+/*}*/
 
-.appbar-login {
-  display: none;
-}
+/*.appbar-login {*/
+/*  display: none;*/
+/*}*/
 
 @media screen and (min-width: 540px) {
   .appbar-login {
@@ -786,7 +786,7 @@ label {
   font-size: 13px; }
 .table-dashboard thead th,
 .table-dashboard tbody td {
-  border-color: #e5e9f2;
+  border-color: #000000;
   white-space: nowrap; }
 .table-dashboard thead th:first-child,
 .table-dashboard tbody td:first-child {
@@ -796,11 +796,11 @@ label {
   padding-right: 20px; }
 .table-dashboard thead th {
   font-family: -apple-system, BlinkMacSystemFont, "Inter UI", Roboto, sans-serif;
-  font-size: 10px;
-  font-weight: 500;
+  font-size: 12px;
+  font-weight: bold;
   letter-spacing: .5px;
   text-transform: uppercase;
-  color: #8392a5; }
+  color: #000000; }
 
 .table-dashboard-one tbody td {
   padding-top: 5px;
@@ -823,7 +823,7 @@ label {
 .card-dashboard-table .table thead tr:first-child th {
   border-top-width: 0;
   font-size: 13px;
-  background-color: #f5f6fa;
+  background-color: #000000;
   text-align: left; }
 
 .card-dashboard-table .table thead tr:last-child th {
@@ -831,7 +831,7 @@ label {
   text-transform: uppercase;
   letter-spacing: .5px;
   padding: 8px 15px;
-  color: #8392a5; }
+  color: #000000; }
 
 .card-dashboard-table .table thead tr th:first-child,
 .card-dashboard-table .table tbody tr td:first-child {

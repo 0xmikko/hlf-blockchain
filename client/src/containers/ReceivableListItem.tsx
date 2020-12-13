@@ -1,6 +1,6 @@
 import React from "react";
 import { Receivable } from "../core/receivable";
-import { Button } from "react-bootstrap";
+import { Button, Table } from "react-bootstrap";
 import { useDispatch } from "react-redux";
 import actions from "../store/actions";
 
@@ -18,14 +18,14 @@ export function ReceivableListItem1({
     dispatch(actions.network2.importReceivable(data.id, "Sync"));
 
   return (
-    <tr>
-      <td>{data.issuer}</td>
-      <td>{data.payer}</td>
-      <td>{data.amount}</td>
+      <tr onClick={() => onSelect(data.id)}>
+        <td className="text-left tx-normal" style={{height: "60px"}}>{data.issuer}</td>
+        <td className="text-left tx-normal">{data.payer}</td>
+        <td className="text-center tx-normal">{data.amount}</td>
       <td>
         <Button size={"sm"} onClick={onSync}>
-          Sync
-        </Button>{" "}
+          Transfer
+        </Button>
       </td>
     </tr>
   );
@@ -36,10 +36,10 @@ export function ReceivableListItem2({
   onSelect,
 }: ReceivableListItemProps): React.ReactElement {
   return (
-    <tr>
-      <td>{data.issuer}</td>
-      <td>{data.payer}</td>
-      <td>{data.amount}</td>
+    <tr onClick={() => onSelect(data.id)}>
+      <td className="text-left tx-normal" style={{height: "60px"}}>{data.issuer}</td>
+      <td className="text-left tx-normal">{data.payer}</td>
+      <td className="text-center tx-normal">{data.amount}</td>
       <td></td>
     </tr>
   );
@@ -49,14 +49,22 @@ export function ReceivableHeader({
   children,
 }: React.PropsWithChildren<any>): React.ReactElement {
   return (
-    <table>
-      <thead>
-        <th>Issuer</th>
-        <th>Payer</th>
+    <Table
+      className="table-dashboard"
+      hover={true}
+      style={{
+        color: "black",
+
+        marginTop: "20px",
+      }}
+    >
+      <thead style={{ borderColor: "black!important"}}>
+        <th className="text-left tx-normal">Issuer</th>
+        <th className="text-left tx-normal">Payer</th>
         <th>Amount</th>
         <th>Action</th>
       </thead>
       <tbody>{children}</tbody>
-    </table>
+    </Table>
   );
 }

@@ -4,7 +4,7 @@
 
 import { combineReducers } from "redux";
 import receivables_1 from './network1/reducer'
-import receivables_2 from './network1/reducer'
+import receivables_2 from './network2/reducer'
 import { operationReducer } from "redux-data-connect";
 
 export default combineReducers({

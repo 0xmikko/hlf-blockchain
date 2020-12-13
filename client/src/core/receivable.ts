@@ -4,4 +4,5 @@ export interface Receivable {
     issuer: number,
     payer: number,
     amount: number,
+    hash: string,
 }
