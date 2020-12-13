@@ -28,11 +28,12 @@ func NewServer(config *config.Config) *gin.Engine {
 
 	// CORS setup
 	engine.Use(cors.New(cors.Config{
-		//AllowAllOrigins:  true,
-		AllowOrigins: []string{
-			"http://localhost:8080",
-			"http://localhost:5000",
-		},
+		AllowAllOrigins: true,
+		//AllowOrigins: []string{
+		//	"http://localhost:8080",
+		//	"http://localhost:5000",
+		//	"http://localhost:3000",
+		//},
 		AllowMethods:     []string{"POST", "GET", "PUT", "PATCH", "DELETE"},
 		AllowHeaders:     []string{"Content-Type", "Content-Length", "X-CSRF-Token", "Authorization", "accept", "origin", "Cache-Control", "X-Requested-With"},
 		AllowCredentials: true,
