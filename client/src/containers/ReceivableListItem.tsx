@@ -50,7 +50,7 @@ export function ReceivableListItem1({
           break;
       }
     }
-  }, [operation?.status, hash]);
+  }, [operation?.status, hash]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <tr>
